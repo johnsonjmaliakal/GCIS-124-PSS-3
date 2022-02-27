@@ -67,121 +67,31 @@ public class AdjacencyRedBlackGraph<E> implements RedBlackGraph<E> {
     public boolean hasRedBlackPath(E a, E b) {
         ArrayList<RedBlackVertex<E>> visited = new ArrayList<RedBlackVertex<E>>();
         RedBlackVertex<E> v = vertices.get(a);
-        visited = visitDFS(v,visited, vertices.get(b));
-        //System.out.println(visited);                   //extra
-        if (visited.contains(vertices.get(b))){
-            RedBlackVertex<E> first = vertices.get(a);
-            boolean temp = first.color();
-            int flag = 0; 
-            int starter = 0;
-            for (RedBlackVertex<E>i:visited){
-                if (starter == 0) {
-                    starter = 1;
-                    continue;
-                }
-                //System.out.println(i);                  //extra
-                if (i.color() == !temp){
-                    temp = i.color();
-                    flag = 0;
-                }
-                else {
-                    flag = 1;
-                    break;
-                }
-                if (i == vertices.get(b)){
-                    break;
-                }
-            }
-            if (flag == 0){
-                return true;
+        visitDFS(v,visited);
+        int flag = 0;
+        for (RedBlackVertex<E> i: visited){
+            if (i == vertices.get(b)){
+                flag = 1;
+                break;
             }
             else {
-                return false;
+                flag = 0;
             }
         }
-        else{
+        if (flag == 1){
+            return true;
+        }
+        else {
             return false;
         }
     }
+    
 
-    private ArrayList<RedBlackVertex<E>> visitDFS(RedBlackVertex<E>v,ArrayList<RedBlackVertex<E>>visited, RedBlackVertex<E>end){
-        System.out.print("Current visited: ");                  //extra
-        System.out.println(visited);                            //extra
+    private void visitDFS (RedBlackVertex<E> v, ArrayList<RedBlackVertex<E>> visited){
         visited.add(v);
-
-        Set <RedBlackVertex<E>> n = v.getNeighbors();
-        System.out.print("current element: ");                  //extra
-        System.out.print(v);                                    //extra
-        System.out.println(n);                                  //extra
-        System.out.print("Size: ");                             //extra
-        System.out.println(n.size());                           //extra
-
-        if (n.size() == 0){
-            return visited;
+        for (RedBlackVertex<E>w : v.getNeighbors()){
+            if(!visited.contains(w) && v.color() != w.color())
+                visitDFS(w,visited);
         }
-        else{
-            ArrayList <RedBlackVertex<E>> list = new ArrayList<RedBlackVertex<E>>();
-            for (RedBlackVertex<E> w : n){
-                list.add(w);
-            }
-            for(RedBlackVertex<E>w:list){
-                //RedBlackVertex<E> test = visited.get(visited.size()-1);
-                if (w.getNeighbors().size() == 0){
-                    if (!visited.contains(w) && true){
-                        visited.add(w);
-                        return visited;
-                    }
-                    else {
-                        return visited;
-                    }
-                }
-                else {
-                    if (true){
-                        if (!visited.contains(w)){
-                            if (w != end){
-                                visitDFS(w, visited, end);
-                            }
-                            else{
-                                visited.add(w);
-                                return visited;
-                            }
-                        }
-                    }
-                }
-                
-            }
-        }
-        return visited;
-    }
-
- private ArrayList<RedBlackVertex<E>> visitDFS2(RedBlackVertex<E>x,ArrayList<RedBlackVertex<E>>visited){ //extra function to create non recursive visitDFS, ignore
-    visited.add(x);
-    Set <RedBlackVertex<E>> n = x.getNeighbors();
-    RedBlackVertex<E>v = x;
-    while (true){
-        int s = n.size();
-        if (s == 0){
-            break;
-        }
-        else {
-            for(RedBlackVertex<E>w:n){
-                RedBlackVertex<E> test = visited.get(visited.size()-1);
-                if(test.color() != w.color()){
-                    if (!visited.contains(w)){
-                        visited.add(w);
-                        n = w.getNeighbors();
-                        v = w;
-                        break;
-                        }
-                    }
-                }
-            }
-        
-        if (v == x){
-            break;
-            }
-    }
-    return visited;
-               
     }
 }
